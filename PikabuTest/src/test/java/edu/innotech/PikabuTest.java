@@ -9,7 +9,7 @@ import java.time.Duration;
 import static edu.innotech.Locators.*;
 
 public class PikabuTest {
-    private final String PIKABU_URL = "https://pikabu.ru/";
+    private static final String PIKABU_URL = "https://pikabu.ru/";
     WebDriver driver;
 
     @BeforeEach
