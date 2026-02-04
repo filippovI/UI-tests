@@ -5,12 +5,14 @@ import org.openqa.selenium.By;
 
 @Getter
 public enum Locators {
-    XPATH_FOR_LOGIN_BUTTON(By.xpath("//div[@class='header-right-menu']//button[contains(text(),'Войти')]")),
-    CSS_FOR_MODAL_AUTH(By.cssSelector("div[class='auth-modal']")),
-    CSS_FOR_MODAL_INPUT_LOGIN(By.cssSelector("div[class='auth-modal'] input[placeholder='Логин']")),
-    CSS_FOR_MODAL_INPUT_PASSWORD(By.cssSelector("div[class='auth-modal'] input[placeholder='Пароль']")),
-    XPATH_FOR_MODAL_BUTTON_LOGIN(By.xpath("//div[@class='auth-modal']//span[text()='Войти']/..")),
-    XPATH_FOR_ERROR_MESSAGE(By.xpath("//span[text()='Ошибка. Вы ввели неверные данные авторизации']"));
+    CSS_FOR_KALININGRAD_IMAGE(By.cssSelector("img[src*='KALINIGRAD']")),
+    CSS_FOR_KALININGRAD_TEXT(By.cssSelector("img[src*='KALINIGRAD'] ~ div:nth-last-child(1) > div > div:nth-child(1)")),
+    CSS_FOR_BACK_BUTTON(By.cssSelector("button[aria-label='Назад']")),
+    XPATH_FOR_LANGUAGE_BUTTON(By.xpath("//button[contains(text(), 'РУС')]")),
+    XPATH_FOR_ENGLISH_BUTTON(By.xpath("//div[@role='menuitem' and contains(text(), 'English')]")),
+    XPATH_FOR_TICKET_SEARCH(By.xpath("//button[.//span[contains(text(), 'search')]]")),
+    XPATH_FOR_ONLINE_CHECK_IN(By.xpath("//button[.//span[contains(text(), 'check-in')]]")),
+    XPATH_FOR_MANAGE_MY_BOOKING(By.xpath("//button[.//span[contains(text(), 'booking')]]"));
 
     private final By locator;
 
