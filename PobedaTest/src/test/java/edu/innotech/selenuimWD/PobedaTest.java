@@ -1,4 +1,4 @@
-package edu.innotech;
+package edu.innotech.selenuimWD;
 
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
@@ -6,7 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
 
-import static edu.innotech.PobedaTestUtils.*;
+import static edu.innotech.selenuimWD.PobedaTestUtils.*;
 
 public class PobedaTest {
     private static final String POBEDA_URL = "https://pobeda.aero/";

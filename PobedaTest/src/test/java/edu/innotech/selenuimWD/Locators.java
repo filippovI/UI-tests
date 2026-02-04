@@ -1,4 +1,4 @@
-package edu.innotech;
+package edu.innotech.selenuimWD;
 
 import lombok.Getter;
 import org.openqa.selenium.By;

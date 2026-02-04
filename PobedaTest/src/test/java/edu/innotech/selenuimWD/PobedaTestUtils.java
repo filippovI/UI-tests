@@ -1,4 +1,4 @@
-package edu.innotech;
+package edu.innotech.selenuimWD;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +12,8 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static edu.innotech.Locators.*;
-import static edu.innotech.PobedaTest.driver;
+import static edu.innotech.selenuimWD.Locators.*;
+import static edu.innotech.selenuimWD.PobedaTest.driver;
 import static org.awaitility.Awaitility.await;
 
 public class PobedaTestUtils {
