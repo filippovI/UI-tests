@@ -73,18 +73,19 @@ public class MainPage {
         return new MainPageSearchTicketsBlock(driver);
     }
 
-
-    public MainPageInformationBlock selectInformationBlock() {
+    public MainPage basicChecks() {
         return checkVisibleLogo(Duration.ofSeconds(2))
                 .checkAds()
-                .checkTitle()
+                .checkTitle();
+    }
+
+    public MainPageInformationBlock selectInformationBlock() {
+        return basicChecks()
                 .moveToInformationBlock();
     }
 
     public MainPageSearchTicketsBlock selectSearchBlock() {
-        return checkVisibleLogo(Duration.ofSeconds(2))
-                .checkAds()
-                .checkTitle()
+        return basicChecks()
                 .moveToSearchBlock();
     }
 
