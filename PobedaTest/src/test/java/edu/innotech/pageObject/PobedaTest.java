@@ -3,6 +3,7 @@ package edu.innotech.pageObject;
 import edu.innotech.pageObject.objects.MainPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,6 +15,7 @@ public class PobedaTest {
     private static final Duration TIME_FOR_PAGE_LOAD_WAIT = Duration.ofSeconds(5);
     private static final Duration TIME_FOR_IMPLICITLY_WAIT = Duration.ofSeconds(3);
     WebDriver driver;
+    MainPage mainPage;
 
     @BeforeEach
     public void setUp() {
@@ -22,14 +24,23 @@ public class PobedaTest {
         driver.manage().timeouts().pageLoadTimeout(TIME_FOR_PAGE_LOAD_WAIT);
         driver.manage().timeouts().implicitlyWait(TIME_FOR_IMPLICITLY_WAIT);
         driver.manage().window().maximize();
+        mainPage = new MainPage(driver);
     }
 
     @Test
-    public void test() {
-        MainPage mainPage = new MainPage(driver);
+    @DisplayName("Проверяем блок информации на заголовки")
+    public void checkInformationBlock() {
         mainPage
                 .selectInformationBlock()
                 .checkHeadlines();
+    }
+
+    @Test
+    @DisplayName("Проверяем блок поиска билетов на поля, кнопки и обводку поля при неудачном поиске")
+    public void checkSearchBlock() {
+        mainPage
+                .selectSearchBlock()
+                .checkColorDateFromInput();
     }
 
     @AfterEach
