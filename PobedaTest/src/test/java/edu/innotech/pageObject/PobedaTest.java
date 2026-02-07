@@ -45,8 +45,18 @@ public class PobedaTest {
                 .checkColorDateFromInput();
     }
 
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
+    @Test
+    @DisplayName("Проверяем результат поиска несуществующего бронирования")
+    public void checkResultOfSearchReservation() {
+        mainPage
+                .checkTitleAndImage()
+                .selectReservationBlock()
+                .fillIncorrectData()
+                .checkErrorMessage();
     }
+
+//    @AfterEach
+//    public void tearDown() {
+//        driver.quit();
+//    }
 }

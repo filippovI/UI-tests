@@ -16,6 +16,8 @@ import static org.awaitility.Awaitility.await;
 public class MainPage {
     private final String title = "Авиакомпания «Победа» - купить авиабилеты онлайн, дешёвые билеты на самолёт, " +
             "прямые и трансферные рейсы с пересадками";
+    @FindBy(xpath = "//button[span[text()='Управление бронированием']]")
+    WebElement buttonForReservationBlock;
     @FindBy(css = "a[href='/information']")
     WebElement informationButton;
     @FindBy(xpath = "//img[contains(@src, 'logo-rus-white.')]/ancestor::div[contains(@class, 'root')][1]")
@@ -71,6 +73,11 @@ public class MainPage {
 
     public MainPageSearchTicketsBlock selectSearchBlock() {
         return new MainPageSearchTicketsBlock(driver);
+    }
+
+    public MainPageReservationBlock selectReservationBlock() {
+        buttonForReservationBlock.click();
+        return new MainPageReservationBlock(driver);
     }
 
     public MainPage checkTitleAndImage() {
