@@ -63,30 +63,20 @@ public class MainPage {
         return this;
     }
 
-    public MainPageInformationBlock moveToInformationBlock() {
+    public MainPageInformationBlock selectInformationBlock() {
         Actions action = new Actions(driver);
         action.moveToElement(informationButton).perform();
         return new MainPageInformationBlock(driver);
     }
 
-    public MainPageSearchTicketsBlock moveToSearchBlock() {
+    public MainPageSearchTicketsBlock selectSearchBlock() {
         return new MainPageSearchTicketsBlock(driver);
     }
 
-    public MainPage basicChecks() {
+    public MainPage checkTitleAndImage() {
         return checkVisibleLogo(Duration.ofSeconds(2))
                 .checkAds()
                 .checkTitle();
-    }
-
-    public MainPageInformationBlock selectInformationBlock() {
-        return basicChecks()
-                .moveToInformationBlock();
-    }
-
-    public MainPageSearchTicketsBlock selectSearchBlock() {
-        return basicChecks()
-                .moveToSearchBlock();
     }
 
 }

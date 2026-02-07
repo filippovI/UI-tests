@@ -31,6 +31,7 @@ public class PobedaTest {
     @DisplayName("Проверяем блок информации на заголовки")
     public void checkInformationBlock() {
         mainPage
+                .checkTitleAndImage()
                 .selectInformationBlock()
                 .checkHeadlines();
     }
@@ -39,6 +40,7 @@ public class PobedaTest {
     @DisplayName("Проверяем блок поиска билетов на поля, кнопки и обводку поля при неудачном поиске")
     public void checkSearchBlock() {
         mainPage
+                .checkTitleAndImage()
                 .selectSearchBlock()
                 .checkColorDateFromInput();
     }
