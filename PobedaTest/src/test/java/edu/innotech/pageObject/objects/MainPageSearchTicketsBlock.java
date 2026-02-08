@@ -1,63 +1,41 @@
 package edu.innotech.pageObject.objects;
 
-import org.junit.jupiter.api.Assertions;
+import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.Keys;
 
-import java.time.Duration;
-
-import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
+import static edu.innotech.pageObject.objects.ObjectsUtils.checkVisibleElements;
 
 public class MainPageSearchTicketsBlock {
 
-    @FindBy(css = "form:has(input[placeholder='Откуда'])")
-    WebElement searchTicketBlock;
-    @FindBy(css = "form input[placeholder='Откуда'][autocorrect]")
-    WebElement fromInput;
-    @FindBy(css = "form input[placeholder='Куда'][autocorrect]")
-    WebElement whereInput;
-    @FindBy(xpath = "//form//input[@placeholder='Туда']/..")
-    WebElement dateFromInput;
-    @FindBy(xpath = "//form//input[@placeholder='Обратно']/..")
-    WebElement dateBackInput;
-    @FindBy(css = "div[class*='dp-ScrollArea-contentEl'] div[role='menuitem']:first-child")
-    WebElement menuItem;
-    @FindBy(xpath = "//span[text()='Поиск']/..")
-    WebElement searchButton;
+    SelenideElement searchTicketBlock = $("form:has(input[placeholder='Откуда'])");
+    SelenideElement fromInput = $("form input[placeholder='Откуда'][autocorrect]");
+    SelenideElement whereInput = $("form input[placeholder='Куда'][autocorrect]");
+    SelenideElement dateThereInput = $(By.xpath("//form//input[@placeholder='Туда']/.."));
+    SelenideElement dateBackInput = $(By.xpath("//form//input[@placeholder='Обратно']/.."));
+    SelenideElement menuItem = $("div[class*='dp-ScrollArea-contentEl'] div[role='menuitem']:first-child");
+    SelenideElement searchButton = $(By.xpath("//span[text()='Поиск']/.."));
 
-    WebDriver driver;
-
-    public MainPageSearchTicketsBlock(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
 
     public MainPageSearchTicketsBlock checkTicketBlock() {
-        Assertions.assertTrue(searchTicketBlock.isDisplayed(), "Блок покупки билетов не отобразился");
+        searchTicketBlock.shouldBe(visible.because("Блок поиска билетов не появился"));
         return this;
     }
 
     public MainPageSearchTicketsBlock checkFieldsInBlock() {
-        Assertions.assertTrue(fromInput.isDisplayed()
-                && whereInput.isDisplayed()
-                && dateFromInput.isDisplayed()
-                && dateBackInput.isDisplayed(), "Не все поля отобразились в блоке поиска билетов");
+        checkVisibleElements("поиска билетов", fromInput, whereInput, dateThereInput, dateBackInput);
         return this;
     }
 
     public MainPageSearchTicketsBlock fillFieldsFromAndWhere(String from, String where) {
         try {
-            fromInput.click();
-            fromInput.sendKeys(from);
-            waiting(() -> menuItem.isDisplayed(), Duration.ofSeconds(1));
-            menuItem.click();
-            whereInput.click();
-            whereInput.sendKeys(where);
-            waiting(() -> menuItem.isDisplayed(), Duration.ofSeconds(1));
-            menuItem.click();
+            fromInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + from);
+            menuItem.shouldBe(visible).shouldHave(text(from)).click();
+            whereInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + where);
+            menuItem.shouldBe(visible).shouldHave(text(where)).click();
             searchButton.click();
         } catch (ElementNotInteractableException ex) {
             throw new ElementNotInteractableException("Не удалось ввести данные в поля 'Откуда' и 'Куда'");
@@ -65,10 +43,9 @@ public class MainPageSearchTicketsBlock {
         return this;
     }
 
-    public MainPageSearchTicketsBlock checkBorder(WebElement element) {
-        waiting(element::isDisplayed, Duration.ofSeconds(1));
-        String test = element.getCssValue("border-color");
-        Assertions.assertTrue(test.contains("213, 0, 98"), "Цвет обводки поля Туда отличает от красного");
+    public MainPageSearchTicketsBlock checkBorder(SelenideElement element) {
+        element.shouldHave(cssValue("border-color", "rgb(213, 0, 98)")
+                .because("Цвет обводки поля Туда не красный"));
         return this;
     }
 
@@ -76,6 +53,6 @@ public class MainPageSearchTicketsBlock {
         return checkTicketBlock()
                 .checkFieldsInBlock()
                 .fillFieldsFromAndWhere("Москва", "Санкт-Петербург")
-                .checkBorder(dateFromInput);
+                .checkBorder(dateThereInput);
     }
 }

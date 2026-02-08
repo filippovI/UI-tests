@@ -1,17 +1,17 @@
 package edu.innotech.pageObject.objects;
 
-import java.time.Duration;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.UIAssertionError;
 
-import static org.awaitility.Awaitility.await;
+import static com.codeborne.selenide.Condition.visible;
 
 public class ObjectsUtils {
-    public static void waiting(Callable<Boolean> condition, Duration duration) {
-        await().alias("Awaitility waiting")
-                .atMost(duration)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
-                .ignoreNoExceptions()
-                .until(condition);
+
+    public static void checkVisibleElements(String block, SelenideElement... elements ) {
+        try {
+            for (SelenideElement element : elements) element.shouldBe(visible);
+        } catch (UIAssertionError ex) {
+            throw new AssertionError("Элементы блока " + block + " не появились");
+        }
     }
 }

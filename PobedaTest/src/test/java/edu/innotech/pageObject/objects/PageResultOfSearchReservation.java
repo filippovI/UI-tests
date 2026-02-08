@@ -1,53 +1,31 @@
 package edu.innotech.pageObject.objects;
 
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.UIAssertionError;
+import org.openqa.selenium.By;
+
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.*;
 
 public class PageResultOfSearchReservation {
 
-    @FindBy(css = "div.customCheckbox")
-    WebElement checkBox;
-    @FindBy(css = "button[class*='search']")
-    WebElement searchButton;
-    @FindBy(xpath = "//div[text()='Заказ с указанными параметрами не найден']")
-    WebElement errorMessage;
-
-    WebDriver driver;
-    String originalWindow;
-
-    public PageResultOfSearchReservation(WebDriver driver, String originalWindow) {
-        this.driver = driver;
-        this.originalWindow = originalWindow;
-        PageFactory.initElements(driver, this);
-    }
+    SelenideElement checkBox = $("div.customCheckbox");
+    SelenideElement searchButton = $("button[class*='search']");
+    SelenideElement errorMessage = $(By.xpath("//div[text()='Заказ с указанными параметрами не найден']"));
 
     public PageResultOfSearchReservation waitLoadPage() {
-        //Страница грузится не с 1 раза, поэтому пробуем 3 раза или выкидываем исключение.
-        //Может выскочить капча
-        int refreshCount = 0;
-        for (String windowHandle : driver.getWindowHandles()) {
-            if (!originalWindow.contentEquals(windowHandle)) {
-                this.driver.switchTo().window(windowHandle);
-                break;
-            }
-        }
-        while (refreshCount < 4) {
+        switchTo().window(1);
+        for (int i = 0; true; i++) {
             try {
-                Assertions.assertTrue(checkBox.isDisplayed() && searchButton.isDisplayed(),
-                        "Чек бокс и кнопка поиска не отобразились");
-                break;
-            } catch (NoSuchElementException | TimeoutException ex) {
-                if (refreshCount == 3) throw new NoSuchElementException("Не удалось загрузить страницу");
-                this.driver.navigate().refresh();
-                refreshCount++;
+                checkBox.shouldBe(visible);
+                searchButton.shouldBe(visible);
+                return this;
+            } catch (UIAssertionError e) {
+                if (i == 3) throw new AssertionError("Не удалось загрузить страницу");
+                refresh();
             }
         }
-        return this;
     }
 
     public PageResultOfSearchReservation clickCheckBoxAndButton() {
@@ -57,7 +35,8 @@ public class PageResultOfSearchReservation {
     }
 
     public PageResultOfSearchReservation locateErrorMessage() {
-        Assertions.assertTrue(errorMessage.isDisplayed(), "Ошибка бронирования не отобразилась");
+        errorMessage.shouldBe(visible.because("Сообщение с ошибкой не появилось"))
+                .shouldHave(text("Заказ с указанными параметрами не найден").because("Текст ошибки неверный"));
         return this;
     }
 

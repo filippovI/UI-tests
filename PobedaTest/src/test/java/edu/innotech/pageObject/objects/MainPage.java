@@ -1,80 +1,63 @@
 package edu.innotech.pageObject.objects;
 
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.By;
 
 import java.time.Duration;
+import java.util.List;
 
-import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class MainPage {
     private final String title = "Авиакомпания «Победа» - купить авиабилеты онлайн, дешёвые билеты на самолёт, " +
             "прямые и трансферные рейсы с пересадками";
-    @FindBy(xpath = "//button[span[text()='Управление бронированием']]")
-    WebElement buttonForReservationBlock;
-    @FindBy(css = "a[href='/information']")
-    WebElement informationButton;
-    @FindBy(xpath = "//img[contains(@src, 'logo-rus-white.')]/ancestor::div[contains(@class, 'root')][1]")
-    WebElement whiteLogo;
-    @FindBy(xpath = "//img[contains(@src, 'logo-rus.')]/ancestor::div[contains(@class, 'root')][1]")
-    WebElement logo;
-    @FindBy(css = "div[role='dialog']")
-    WebElement adsDialog;
-    @FindBy(css = "button[data-testid='ads-popup-close-icon']")
-    WebElement closeButtonForAdsDialog;
+    SelenideElement buttonForReservationBlock = $(By.xpath("//button[span[text()='Управление бронированием']]"));
+    SelenideElement informationButton = $("a[href='/information']");
+    SelenideElement whiteLogo = $(By.xpath("//img[contains(@src, 'logo-rus-white.')]/ancestor::div[contains(@class, 'root')][1]"));
+    SelenideElement logo = $(By.xpath("//img[contains(@src, 'logo-rus.')]/ancestor::div[contains(@class, 'root')][1]"));
+    SelenideElement adsDialog = $("div[role='dialog']");
+    SelenideElement closeButtonForAdsDialog = $("button[data-testid='ads-popup-close-icon']");
 
-    WebDriver driver;
-
-    public MainPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
-
-    public MainPage checkAds(Duration duration) {
-        waiting(() -> {
-            if (adsDialog.isDisplayed()) closeButtonForAdsDialog.click();
-            return true;
-        }, duration);
+    public MainPage checkAds() {
+        try {
+            adsDialog.shouldBe(visible, Duration.ofSeconds(2));
+            closeButtonForAdsDialog.click();
+        } catch (com.codeborne.selenide.ex.UIAssertionError ignored){}
         return this;
     }
 
-    public MainPage checkVisibleLogo(Duration duration) {
-        try {
-            waiting(() -> logo.isDisplayed() || whiteLogo.isDisplayed(), duration);
-        } catch (NoSuchElementException ex) {
-            throw new java.util.NoSuchElementException("Лого Победы не появилось");
-        }
+    public MainPage checkVisibleLogo() {
+        $$(List.of(logo, whiteLogo)).filter(visible).shouldHave(sizeGreaterThan(0));
         return this;
     }
 
     public MainPage checkTitle() {
-        Assertions.assertEquals(title, driver.getTitle(), "Неверный заголовок");
+        Assertions.assertEquals(title, Selenide.title(), "Неверный заголовок");
         return this;
     }
 
     public MainPageInformationBlock selectInformationBlock() {
-        Actions action = new Actions(driver);
-        action.moveToElement(informationButton).perform();
-        return new MainPageInformationBlock(driver);
+        informationButton.hover();
+        return new MainPageInformationBlock();
     }
 
     public MainPageSearchTicketsBlock selectSearchBlock() {
-        return new MainPageSearchTicketsBlock(driver);
+        return new MainPageSearchTicketsBlock();
     }
 
     public MainPageReservationBlock selectReservationBlock() {
         buttonForReservationBlock.click();
-        return new MainPageReservationBlock(driver);
+        return new MainPageReservationBlock();
     }
 
     public MainPage checkTitleAndImage() {
-        return checkVisibleLogo(Duration.ofSeconds(2))
-                .checkAds(Duration.ofSeconds(3))
+        return checkVisibleLogo()
+                .checkAds()
                 .checkTitle();
     }
 
