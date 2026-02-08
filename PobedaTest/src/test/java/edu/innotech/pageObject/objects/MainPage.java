@@ -9,9 +9,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
+import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
 
 public class MainPage {
     private final String title = "Авиакомпания «Победа» - купить авиабилеты онлайн, дешёвые билеты на самолёт, " +
@@ -36,24 +35,17 @@ public class MainPage {
         PageFactory.initElements(driver, this);
     }
 
-    public MainPage checkAds() {
-        await().pollInterval(500, TimeUnit.MILLISECONDS)
-                .until(() ->
-                {
-                    if (adsDialog.isDisplayed())
-                        closeButtonForAdsDialog.click();
-                    return true;
-                });
+    public MainPage checkAds(Duration duration) {
+        waiting(() -> {
+            if (adsDialog.isDisplayed()) closeButtonForAdsDialog.click();
+            return true;
+        }, duration);
         return this;
     }
 
     public MainPage checkVisibleLogo(Duration duration) {
         try {
-            await()
-                    .atMost(duration)
-                    .pollInterval(500, TimeUnit.MILLISECONDS)
-                    .ignoreNoExceptions()
-                    .until(() -> logo.isDisplayed() || whiteLogo.isDisplayed());
+            waiting(() -> logo.isDisplayed() || whiteLogo.isDisplayed(), duration);
         } catch (NoSuchElementException ex) {
             throw new java.util.NoSuchElementException("Лого Победы не появилось");
         }
@@ -82,7 +74,7 @@ public class MainPage {
 
     public MainPage checkTitleAndImage() {
         return checkVisibleLogo(Duration.ofSeconds(2))
-                .checkAds()
+                .checkAds(Duration.ofSeconds(3))
                 .checkTitle();
     }
 

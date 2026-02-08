@@ -24,7 +24,7 @@ public class MainPageInformationBlock {
     public MainPageInformationBlock checkHeadlines() {
         Assertions.assertTrue(preparingForFlyHead.isDisplayed()
                 && usefulInformationHead.isDisplayed()
-                && aboutCompanyHead.isDisplayed());
+                && aboutCompanyHead.isDisplayed(), "В блоке информации не отобразились все элементы");
         return this;
 
     }

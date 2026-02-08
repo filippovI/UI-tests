@@ -8,9 +8,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
+import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
 
 public class MainPageSearchTicketsBlock {
 
@@ -53,11 +52,11 @@ public class MainPageSearchTicketsBlock {
         try {
             fromInput.click();
             fromInput.sendKeys(from);
-            waiting(Duration.ofSeconds(1), menuItem);
+            waiting(() -> menuItem.isDisplayed(), Duration.ofSeconds(1));
             menuItem.click();
             whereInput.click();
             whereInput.sendKeys(where);
-            waiting(Duration.ofSeconds(1), menuItem);
+            waiting(() -> menuItem.isDisplayed(), Duration.ofSeconds(1));
             menuItem.click();
             searchButton.click();
         } catch (ElementNotInteractableException ex) {
@@ -67,7 +66,7 @@ public class MainPageSearchTicketsBlock {
     }
 
     public MainPageSearchTicketsBlock checkBorder(WebElement element) {
-        waiting(Duration.ofSeconds(1), element);
+        waiting(element::isDisplayed, Duration.ofSeconds(1));
         String test = element.getCssValue("border-color");
         Assertions.assertTrue(test.contains("213, 0, 98"), "Цвет обводки поля Туда отличает от красного");
         return this;
@@ -78,11 +77,5 @@ public class MainPageSearchTicketsBlock {
                 .checkFieldsInBlock()
                 .fillFieldsFromAndWhere("Москва", "Санкт-Петербург")
                 .checkBorder(dateFromInput);
-    }
-
-    private void waiting(Duration duration, WebElement element) {
-        await().atMost(duration)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
-                .until(element::isDisplayed);
     }
 }

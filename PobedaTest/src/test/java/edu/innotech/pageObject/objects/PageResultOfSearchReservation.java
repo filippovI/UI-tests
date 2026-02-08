@@ -1,15 +1,12 @@
 package edu.innotech.pageObject.objects;
 
-import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.awaitility.Awaitility.await;
 
 public class PageResultOfSearchReservation {
 
@@ -29,25 +26,44 @@ public class PageResultOfSearchReservation {
         PageFactory.initElements(driver, this);
     }
 
-    public PageResultOfSearchReservation checkElements() {
-        try {
-            await().atMost(3, TimeUnit.SECONDS)
-                    .pollInterval(500, TimeUnit.MILLISECONDS)
-                    .until(() -> checkBox.isDisplayed() && searchButton.isDisplayed());
-        } catch (ConditionTimeoutException ex) {
-            throw new ConditionTimeoutException("Элементы не отобразились на странице");
+    public PageResultOfSearchReservation waitLoadPage() {
+        //Страница грузится не с 1 раза, поэтому пробуем 3 раза или выкидываем исключение.
+        //Может выскочить капча
+        int refreshCount = 0;
+        for (String windowHandle : driver.getWindowHandles()) {
+            if (!originalWindow.contentEquals(windowHandle)) {
+                this.driver.switchTo().window(windowHandle);
+                break;
+            }
         }
+        while (refreshCount < 4) {
+            try {
+                Assertions.assertTrue(checkBox.isDisplayed() && searchButton.isDisplayed(),
+                        "Чек бокс и кнопка поиска не отобразились");
+                break;
+            } catch (NoSuchElementException | TimeoutException ex) {
+                if (refreshCount == 3) throw new NoSuchElementException("Не удалось загрузить страницу");
+                this.driver.navigate().refresh();
+                refreshCount++;
+            }
+        }
+        return this;
+    }
 
+    public PageResultOfSearchReservation clickCheckBoxAndButton() {
+        checkBox.click();
+        searchButton.click();
+        return this;
+    }
+
+    public PageResultOfSearchReservation locateErrorMessage() {
+        Assertions.assertTrue(errorMessage.isDisplayed(), "Ошибка бронирования не отобразилась");
         return this;
     }
 
     public PageResultOfSearchReservation checkErrorMessage() {
-        checkElements();
-        System.out.println("Кликаем на чек бокс");
-        checkBox.click();
-        System.out.println("Кликаем на кнопку");
-        searchButton.click();
-        Assertions.assertTrue(errorMessage.isDisplayed(), "Сообщение о неверной бронировании не отображается");
-        return this;
+        return waitLoadPage()
+                .clickCheckBoxAndButton()
+                .locateErrorMessage();
     }
 }

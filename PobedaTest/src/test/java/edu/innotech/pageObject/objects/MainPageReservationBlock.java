@@ -1,14 +1,14 @@
 package edu.innotech.pageObject.objects;
 
-import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
-import static org.awaitility.Awaitility.await;
+import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
 
 public class MainPageReservationBlock {
     @FindBy(css = "input[placeholder*='Фамилия']")
@@ -19,21 +19,24 @@ public class MainPageReservationBlock {
     WebElement searchButton;
 
     WebDriver driver;
+
     public MainPageReservationBlock(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
-    public MainPageReservationBlock checkElements() {
-        await().atMost(3, TimeUnit.SECONDS)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
-                .ignoreNoExceptions()
-                .until(() -> surnameInput.isDisplayed() && reservationNumberInput.isDisplayed() && searchButton.isDisplayed());
+    public MainPageReservationBlock checkElements(Duration duration) {
+        try {
+            waiting(() -> surnameInput.isDisplayed() && reservationNumberInput.isDisplayed() && searchButton.isDisplayed(),
+                    duration);
+        } catch (NoSuchElementException ex) {
+            throw new NoSuchElementException("Элементы блока бронирования не появились");
+        }
         return this;
     }
 
     public PageResultOfSearchReservation fillIncorrectData() {
-        checkElements();
+        checkElements(Duration.ofSeconds(3));
         surnameInput.click();
         surnameInput.sendKeys("Qwerty");
         reservationNumberInput.click();
