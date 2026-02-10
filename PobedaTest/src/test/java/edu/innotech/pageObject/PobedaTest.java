@@ -25,7 +25,7 @@ public class PobedaTest {
     }
 
     @Test
-    public void test() {
+    public void checkInformationBlock() {
         MainPage mainPage = new MainPage(driver);
         mainPage
                 .selectInformationBlock()

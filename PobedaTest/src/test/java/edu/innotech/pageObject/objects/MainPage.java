@@ -14,13 +14,16 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 
 public class MainPage {
+
     @FindBy(css = "a[href='/information']")
     WebElement informationButton;
+
     @FindBy(xpath = "//img[contains(@src, 'logo-rus-white.')]/ancestor::div[contains(@class, 'root')][1]")
     WebElement whiteLogo;
-    @FindBy(xpath = "//img[contains(@src, 'logo-rus.')]/ancestor::div[contains(@class, 'root')][1]")
-    WebElement logo;
 
+    @FindBy(xpath = "//img[contains(@src, 'logo-rus.')]/ancestor::div[contains(@class, 'root')][1]")
+
+    WebElement logo;
     WebDriver driver;
 
     public MainPage(WebDriver driver) {
@@ -44,7 +47,6 @@ public class MainPage {
         Assertions.assertEquals("Авиакомпания «Победа» - купить авиабилеты онлайн, дешёвые билеты на самолёт, " +
                 "прямые и трансферные рейсы с пересадками", driver.getTitle(), "Неверный заголовок");
     }
-
 
     public MainPageInformationBlock selectInformationBlock() {
         checkVisibleLogo(Duration.ofSeconds(2));
