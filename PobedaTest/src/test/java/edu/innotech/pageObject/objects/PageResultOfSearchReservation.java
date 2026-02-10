@@ -12,8 +12,10 @@ public class PageResultOfSearchReservation {
 
     @FindBy(css = "div.customCheckbox")
     WebElement checkBox;
+
     @FindBy(css = "button[class*='search']")
     WebElement searchButton;
+
     @FindBy(xpath = "//div[text()='Заказ с указанными параметрами не найден']")
     WebElement errorMessage;
 

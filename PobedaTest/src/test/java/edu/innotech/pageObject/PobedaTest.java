@@ -29,7 +29,7 @@ public class PobedaTest extends BasePobedaTest {
         mainPage
                 .checkTitleAndImage()
                 .selectReservationBlock()
-                .fillIncorrectData()
+                .fillIncorrectData("QWERTY", "XXXXXX")
                 .checkErrorMessage();
     }
 }

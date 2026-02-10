@@ -11,10 +11,13 @@ import java.time.Duration;
 import static edu.innotech.pageObject.objects.ObjectsUtils.waiting;
 
 public class MainPageReservationBlock {
+
     @FindBy(css = "input[placeholder*='Фамилия']")
     WebElement surnameInput;
+
     @FindBy(css = "input[placeholder*='бронирования']")
     WebElement reservationNumberInput;
+
     @FindBy(xpath = "//button[span[text()='Поиск']]")
     WebElement searchButton;
 
@@ -35,12 +38,12 @@ public class MainPageReservationBlock {
         return this;
     }
 
-    public PageResultOfSearchReservation fillIncorrectData() {
+    public PageResultOfSearchReservation fillIncorrectData(String surname, String reservationNumber) {
         checkElements(Duration.ofSeconds(3));
         surnameInput.click();
-        surnameInput.sendKeys("Qwerty");
+        surnameInput.sendKeys(surname);
         reservationNumberInput.click();
-        reservationNumberInput.sendKeys("XXXXXX");
+        reservationNumberInput.sendKeys(reservationNumber);
         searchButton.click();
         return new PageResultOfSearchReservation(driver, driver.getWindowHandle());
     }

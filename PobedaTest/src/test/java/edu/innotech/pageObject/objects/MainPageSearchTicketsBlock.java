@@ -15,16 +15,22 @@ public class MainPageSearchTicketsBlock {
 
     @FindBy(css = "form:has(input[placeholder='Откуда'])")
     WebElement searchTicketBlock;
+
     @FindBy(css = "form input[placeholder='Откуда'][autocorrect]")
     WebElement fromInput;
+
     @FindBy(css = "form input[placeholder='Куда'][autocorrect]")
     WebElement whereInput;
+
     @FindBy(xpath = "//form//input[@placeholder='Туда']/..")
     WebElement dateFromInput;
+
     @FindBy(xpath = "//form//input[@placeholder='Обратно']/..")
     WebElement dateBackInput;
+
     @FindBy(css = "div[class*='dp-ScrollArea-contentEl'] div[role='menuitem']:first-child")
     WebElement menuItem;
+
     @FindBy(xpath = "//span[text()='Поиск']/..")
     WebElement searchButton;
 
