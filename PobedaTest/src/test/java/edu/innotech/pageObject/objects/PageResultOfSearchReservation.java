@@ -2,6 +2,7 @@ package edu.innotech.pageObject.objects;
 
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ex.UIAssertionError;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.text;
@@ -14,6 +15,7 @@ public class PageResultOfSearchReservation {
     SelenideElement searchButton = $("button[class*='search']");
     SelenideElement errorMessage = $(By.xpath("//div[text()='Заказ с указанными параметрами не найден']"));
 
+    @Step("Жде, пока страница загрузится. Обновляем, если не загрузилась (3 раза)")
     public PageResultOfSearchReservation waitLoadPage() {
         switchTo().window(1);
         for (int i = 0; true; i++) {
@@ -28,12 +30,14 @@ public class PageResultOfSearchReservation {
         }
     }
 
+    @Step("Прожимаем галочку и нажимаем на кнопку поиска")
     public PageResultOfSearchReservation clickCheckBoxAndButton() {
         checkBox.click();
         searchButton.click();
         return this;
     }
 
+    @Step("Проверяем текст ошибки на видимость и корректность")
     public PageResultOfSearchReservation locateErrorMessage() {
         errorMessage.shouldBe(visible.because("Сообщение с ошибкой не появилось"))
                 .shouldHave(text("Заказ с указанными параметрами не найден").because("Текст ошибки неверный"));

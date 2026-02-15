@@ -1,8 +1,8 @@
 package edu.innotech.pageObject.objects;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.*;
@@ -25,34 +25,33 @@ public class MainPageSearchTicketsBlock {
         return this;
     }
 
+    @Step("Проверяем видимость полей в блоке")
     public MainPageSearchTicketsBlock checkFieldsInBlock() {
-        checkVisibleElements("поиска билетов", fromInput, whereInput, dateThereInput, dateBackInput);
+        checkVisibleElements("поиска билетов", fromInput, whereInput, dateThereInput, dateBackInput, searchButton);
         return this;
     }
 
+    @Step("Заполняем поля 'Откуда' и 'Куда' данными {from} - {where} и нажимаем 'Поиск'")
     public MainPageSearchTicketsBlock fillFieldsFromAndWhere(String from, String where) {
-        try {
-            fromInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + from);
-            menuItem.shouldBe(visible).shouldHave(text(from)).click();
-            whereInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + where);
-            menuItem.shouldBe(visible).shouldHave(text(where)).click();
-            searchButton.click();
-        } catch (ElementNotInteractableException ex) {
-            throw new ElementNotInteractableException("Не удалось ввести данные в поля 'Откуда' и 'Куда'");
-        }
+        fromInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + from);
+        menuItem.shouldBe(visible).shouldHave(text(from)).click();
+        whereInput.setValue(Keys.CONTROL + "a" + Keys.BACK_SPACE + where);
+        menuItem.shouldBe(visible).shouldHave(text(where)).click();
+        searchButton.click();
         return this;
     }
 
-    public MainPageSearchTicketsBlock checkBorder(SelenideElement element) {
-        element.shouldHave(cssValue("border-color", "rgb(213, 0, 98)")
+    @Step("Проверяем обводку поля {element}")
+    public MainPageSearchTicketsBlock checkBorder(SelenideElement element, String borderColor) {
+        element.shouldHave(cssValue("border-color", borderColor)
                 .because("Цвет обводки поля Туда не красный"));
         return this;
     }
 
-    public MainPageSearchTicketsBlock checkColorDateFromInput() {
+    public MainPageSearchTicketsBlock checkColorDateFromInput(String borderColor) {
         return checkTicketBlock()
                 .checkFieldsInBlock()
                 .fillFieldsFromAndWhere("Москва", "Санкт-Петербург")
-                .checkBorder(dateThereInput);
+                .checkBorder(dateThereInput, borderColor);
     }
 }
